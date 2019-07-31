@@ -96,7 +96,7 @@ def etow(pres, vpres):
 #Outputs:
 #Layer thickness, type=float, in meters
 #-1 on failure
-def hydrostatic(p1,p2,Tbar):
+def hypsometric(p1,p2,Tbar):
 	try:
 		if (p1 < p2):
 			raise ValueError()
