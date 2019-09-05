@@ -155,6 +155,38 @@ def moist_adiabat(p1,p2,t1):
 		print(err)		
 		return -1
 
+#Mean Sea-Level Pressure
+#Given a temperature, pressure, altitude, and mixing ratio,
+#this function returns a pressure value normalized to sea-level (z=0).
+#Equation based on the hypsometric equation and derived in accordance with the WMO
+#Units of pressure are preserved.
+#Inputs:
+#p, type=float, initial pressure, any unit
+#temp, type=float, temperature in Kelvin
+#height, type=float, height above sea-level in meters
+#mixr, type=float, mixing ratio in kg/kg
+#Outputs:
+#slp, type=float, mean sea-level pressure in same unit as pressure input.
+#Returns -1 on failure
+def mslp(p, temp, height, mix_ratio):
+	try:
+		#Calculate virtual temperature
+		vtemp = virt_temp(temp, mix_ratio)
+		
+		#Calculate slp (0.0065 is lapse rate in K/m
+		slp = p*numpy.exp((G*height)/(RD*(vtemp+0.0065*height/2)))
+		
+		#Correct those places were height was zero if any
+		slp[numpy.where(height == 0.0)] = p[numpy.where(height == 0.0)]
+		
+		#Return slp
+		return slp
+		
+	except Exception as err:
+		print(err)
+		return -1
+	
+		
 #Poisson's Equation from Petty
 #Given an initial temperature, initial pressure, and final pressure,
 #this function returns the final temperature of a parcel
@@ -212,7 +244,7 @@ def rh(dtemp, temp):
 #-1 on failure
 def sat_vaporpres(temp):
 	try:
-		temp -= 273.15 #Convert Kelvin -> Celcius
+		temp = temp - 273.15 #Convert Kelvin -> Celcius
 		return 611.2*numpy.exp(17.67*temp/(temp+243.5))
 	except Exception as err:
 		print(err)
@@ -246,5 +278,3 @@ def wtoe(pres, mixr):
 	except Exception as err:
 		print(err)
 		return -1
-
-
