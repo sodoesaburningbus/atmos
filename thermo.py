@@ -142,7 +142,7 @@ def moist_adiabat(p1,p2,t1):
 		#Placing initial temeprature in a list
 		temp = [t1]
 		#Performing integration
-		for p in pres:
+		for p in pres[:-1]:
 			k1 = dp*dtdp(p,temp[-1])
 			k2 = dp*dtdp(p+0.5*dp, temp[-1]+0.5*k1)
 			k3 = dp*dtdp(p+0.5*dp, temp[-1]+0.5*k2)
