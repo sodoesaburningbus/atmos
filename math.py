@@ -29,8 +29,10 @@ import numpy
 #This function interpolates variables between two layers
 #It assumes that variables vary linearly with log-pressure
 #Inputs:
-# pbot, ptop, pmid, type = float or 2D array of floats, bottom, top, and desired pressure levels respectively.
-# varbot, vartop, type = float or 2D array of floats, bottom and top layer of variable to interpolate.
+# pbot, ptop, pmid, type = float or 2D array of floats, bottom, top,
+# and desired pressure levels respectively.
+# varbot, vartop, type = float or 2D array of floats, bottom and
+#top layer of variable to interpolate.
 #
 #Outputs:
 # varmid, float or 2D array of floats, the interpolated variable.
@@ -38,10 +40,10 @@ import numpy
 def layer_interp(pbot, ptop, pmid, varbot, vartop):
     #Compute interpolation weight
     alpha = numpy.log(pmid/pbot)/numpy.log(ptop/pbot)
-    
+
     #Interpolate and return
     return alpha*vartop+(1-alpha)*varbot
-    
+
 #This function calculate the pressure-wighted layer average of a variable
 #Inputs:
 # pres, 1D array of floats, vertical pressure levels to average over
