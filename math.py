@@ -11,8 +11,9 @@
 #
 # History:
 #    January 24, 2020 - First Write
-#       Functiont to interpolate variables to a given layer
-#       Function to average variables over a layer
+#       Function to interpolate variables to a given layer
+#    January 29th, 2020 - Added function
+#       Function to average a variable over a given atmospheric layer.
 #
 # Copyright:
 # This module may be freely distributed and used provided this header
@@ -52,3 +53,17 @@ def layer_interp(pbot, ptop, pmid, varbot, vartop):
 #Outputs:
 # meanvar, float, the layer-averaged variable
 def layer_average(pres, var):
+    #Need to integrate over the whole layer in order to calculate average.
+    #Will do so using mid-points of given pressure levels.
+    var_integration = 0 #Variable to store sum for integration
+    for i in range(var.size-1):
+        #Interpolate to center of each sub-layer
+        var_mid = layer_interp(pres[i], pres[i+1], (pres[i]+pres[i+1])/2,
+            var[i], var[i+1])
+
+        #Integrate this sub-layer
+        var_integration += var_mid*numpy.log(pres[i+1]/pres[i])
+
+    #Now divide integral by entire layer thickness (using log-pressure)
+    #and return value.
+    return var_integration/numpy.log(pres[-1]/pres[0])
