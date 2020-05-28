@@ -44,7 +44,6 @@ RV = 461.5 #Gas Constant for Water Vapor (J/kg/K)
 CP = 1005.0 #Heat Capacity of Dry Air with Constant Pressure (J/kg/K)
 CV = 718.0 #Heat Capacity of Dry Air with Constant Volume (J/kg/K)
 
-
 #From Hartmann
 CVP = 1952.0 #Heat Capacity of Water Vapor with Constant Pressure (J/kg/K)
 CVV = 1463.0 #Heat Capacity of Water Vapor with Constant Volume (J/kg/K)
@@ -234,7 +233,7 @@ def pw(pres, mixr):
         #raise Exception
 
     #Integrate mixing ratio up the atmosphere
-    pw = am.layer_average(pres, mixr)*abs(pres[-1]-pres[0])
+    pw = am.layer_average(pres, mixr)*abs(pres[-1]-pres[0])/1000.0/G
 
     return pw
 
