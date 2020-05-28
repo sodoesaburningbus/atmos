@@ -29,6 +29,7 @@
 # ~Christopher Phillips
 
 #Import required modules
+import atmos.math as am
 import numpy
 
 ############################################################################
@@ -218,6 +219,23 @@ def pot_temp(pres, temp):
 	except Exception as err:
 		print(err)
 		return -1
+
+#Preciptable Water (PW) calculator
+#Calculates PW given a pressure/mixing ratio profile
+#Inputs:
+# pres, type=array of floats, pressure in Pa
+# mixr, type=array of floats, mixing ratio in kg/kg
+def pw(pres, mixr):
+
+    #Check that arrays are the same length
+    if (pres.size != mixr.size):
+        print("Input arrays must be of same length!")
+        raise Exception
+
+    #Integrate mixing ratio up the atmosphere
+    pw = am.layer_average(pres, mixr)*abs(pres[-1]-pres[0])
+
+    return pw
 
 #RH calculator from Petty
 #Given dewpoint and temperature, calculates RH

@@ -45,9 +45,9 @@ def layer_interp(pbot, ptop, pmid, varbot, vartop):
     #Interpolate and return
     return alpha*vartop+(1-alpha)*varbot
 
-#This function calculate the pressure-wighted layer average of a variable
+#This function calculate the pressure-weighted layer average of a variable
 #Inputs:
-# pres, 1D array of floats, vertical pressure levels to average over
+# pres, 1D array of floats, vertical pressure levels to average over (in Pa)
 # var, 1D array of floats, the vertical profile of the variable to average
 #
 #Outputs:
