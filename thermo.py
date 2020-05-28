@@ -224,6 +224,8 @@ def pot_temp(pres, temp):
 #Inputs:
 # pres, type=array of floats, pressure in Pa
 # mixr, type=array of floats, mixing ratio in kg/kg
+#Outputs:
+# pw, type=float, preciptable water in meters
 def pw(pres, mixr):
 
     #Check that arrays are the same length
