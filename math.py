@@ -67,3 +67,26 @@ def layer_average(pres, var):
     #Now divide integral by entire layer thickness (using log-pressure)
     #and return value.
     return var_integration/numpy.log(pres[-1]/pres[0])
+
+#This function calculate the pressure-wighted layer average of a variable
+#Inputs:
+# pres, list of 2D array of floats, vertical pressure levels to average over
+# var, list of 2D array of floats, the vertical profile of the variable to average
+#
+#Outputs:
+# meanvar, float, the layer-averaged variable
+def layer_average2d(pres, var):
+    #Need to integrate over the whole layer in order to calculate average.
+    #Will do so using mid-points of given pressure levels.
+    var_integration = numpy.zeros(pres[0].shape) #Variable to store sums for integration
+    for i in range(len(var)-1):
+        #Interpolate to center of each sub-layer
+        var_mid = layer_interp(pres[i], pres[i+1], (pres[i]+pres[i+1])/2,
+            var[i], var[i+1])
+
+        #Integrate this sub-layer
+        var_integration += var_mid*numpy.log(pres[i+1]/pres[i])
+
+    #Now divide integral by entire layer thickness (using log-pressure)
+    #and return value.
+    return var_integration/numpy.log(pres[-1]/pres[0])
