@@ -230,7 +230,8 @@ def pw(pres, mixr):
     #Check that arrays are the same length
     if (pres.size != mixr.size):
         print("Input arrays must be of same length!")
-        raise Exception
+        exit()        
+        #raise Exception
 
     #Integrate mixing ratio up the atmosphere
     pw = am.layer_average(pres, mixr)*abs(pres[-1]-pres[0])
