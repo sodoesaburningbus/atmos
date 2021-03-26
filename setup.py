@@ -12,11 +12,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/sodoesaburningbus/atmos",
-    packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: GNU General Public License",
         "Operating System :: OS Independent",
     ],
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(where="src"),
     python_requires='>=3.0',
 )
