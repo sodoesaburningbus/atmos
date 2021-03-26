@@ -2,11 +2,11 @@ This package contains modules with functions that are generally
 useful to Atmospheric Scientists.
 
 History:
+Add thermodynamics
+Add misc. mathematics
 
 Future Plans:
-Complete Thermodynamics module
 Write Fluid Dynamics module
-Write WRF output visualization module
 
 Copyright:
 This package may be freely distributed and used provided this notice

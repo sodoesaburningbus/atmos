@@ -46,6 +46,7 @@ def layer_interp(pbot, ptop, pmid, varbot, vartop):
     return alpha*vartop+(1-alpha)*varbot
 
 #This function calculate the pressure-weighted layer average of a variable
+#It naively skips layers with nans in them
 #Inputs:
 # pres, 1D array of floats, vertical pressure levels to average over (in Pa)
 # var, 1D array of floats, the vertical profile of the variable to average
@@ -60,6 +61,10 @@ def layer_average(pres, var):
         #Interpolate to center of each sub-layer
         var_mid = layer_interp(pres[i], pres[i+1], (pres[i]+pres[i+1])/2,
             var[i], var[i+1])
+
+        #Check for nan
+        if numpy.isnan(var_mid):
+            continue
 
         #Integrate this sub-layer
         var_integration += var_mid*numpy.log(pres[i+1]/pres[i])

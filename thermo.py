@@ -43,6 +43,7 @@ RD = 287.047 #Gas Constant for Dry Air (J/kg/K)
 RV = 461.5 #Gas Constant for Water Vapor (J/kg/K)
 CP = 1005.0 #Heat Capacity of Dry Air with Constant Pressure (J/kg/K)
 CV = 718.0 #Heat Capacity of Dry Air with Constant Volume (J/kg/K)
+CW = 4186.0 #Heat capacity of Liquid Water (J/kg/K)
 
 #From Hartmann
 CVP = 1952.0 #Heat Capacity of Water Vapor with Constant Pressure (J/kg/K)
@@ -70,6 +71,53 @@ def dewpoint(e):
 		print(err)
 		return -1
 	
+#This function calculates the equivalent potential temperature
+#Equation is taken from the AMS glossary of meteorology definition
+#of equivalent potential temperature, on September 28th, 2020.
+#Latent heat of vaporization is assumed constant at the value for 0 'C.
+#Inputs:
+#pres, type=float, pressure in Pa
+#temp, type=float, temperature in Kelvin
+#rh, type=float, decimal relative humidity (not percent)
+#rt, type=float, optional, total liquid water mixing ratio in kg/kg. Default is 0.
+#Outputs:
+#Equivalent potential temperature in Kelvin
+#Returns -1 on failure
+def epot_temp(pres, temp, rh, rt=0):
+
+    try:
+        #First calculate water vapor mixing ratio
+        rv = etow(pres, sat_vaporpres(temp)*rh)
+    
+        #Calculate each term in the equivalent potential temperature equation
+        a = temp*(100000.0/pres)**(RD/(CP+rt*CW))
+        b = rh**(-rv*RV/(CP+rt*CW))
+        c = numpy.exp(LV0*rv/((CP+rt*CW)*temp))
+                
+        #Return the product of the terms
+        return a*b*c
+    
+    except Exception as err:
+        print(err)
+        return -1
+
+#This function calculates the isobaric equivalent temperature
+#using the formula found in the AMS online glossary on October 1st, 2020.
+#Latent heat of vaporization is assumed constant at the value for 0 'C.
+#Inputs:
+#temp, type=float, temperature in Kelvin
+#rh, type=float, relative humidity in decimal (not %)
+#Outputs:
+#te, type=float, equivalent temperature in Kelvin
+#Returns -1 on failure
+def equivalent_temp(pres, temp, rh):
+
+    try:
+        w = etow(pres, sat_vaporpres(temp)*rh)
+        return temp*(1+(LV0*w)/(CP*temp))
+    except Exception as err:
+        print(err)
+        return -1
 
 #This function converts vapor pressure to mixing ratio
 #Equation 7.22 in Petty
@@ -152,7 +200,7 @@ def moist_adiabat(p1,p2,t1):
 		return {'pres':pres, 'temp':temp}
 
 	except Exception as err:
-		print(err)		
+		print(err)
 		return -1
 
 #Mean Sea-Level Pressure
