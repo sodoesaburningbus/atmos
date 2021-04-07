@@ -223,10 +223,7 @@ def mslp(p, temp, height, mix_ratio):
 		
 		#Calculate slp (0.0065 is lapse rate in K/m
 		slp = p*numpy.exp((G*height)/(RD*(vtemp+0.0065*height/2)))
-		
-		#Correct those places were height was zero if any
-		slp[numpy.where(height == 0.0)] = p[numpy.where(height == 0.0)]
-		
+				
 		#Return slp
 		return slp
 		

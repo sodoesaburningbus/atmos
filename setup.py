@@ -5,7 +5,7 @@ with open("README.txt", "r") as fn:
 
 setuptools.setup(
     name="atmos",
-    version="1.0.0",
+    version="1.1.0",
     author="Christopher Phillips of UAH, Huntsville, Alabama",
     author_email="cephillips574@gmail.com",
     description="A python package containing useful functions and constants for atmospheric scientists",
