@@ -45,6 +45,33 @@ def layer_interp(pbot, ptop, pmid, varbot, vartop):
     #Interpolate and return
     return alpha*vartop+(1-alpha)*varbot
 
+#This function integrates variables between two pressure levels.
+#It assumes that variables vary linearly with log-pressure
+#Inputs:
+# pres, 1D array of floats, vertical pressure levels to average over (in Pa)
+# var, 1D array of floats, the vertical profile of the variable to average
+#
+#Outputs:
+# intvar, float, the layer-integrated variable
+def layer_integrate(pres, var):
+
+    #Integrate over the whole layer using mid-points of given pressure levels.
+    intvar = 0 #Variable to store sum for integration
+    for i in range(var.size-1):
+        #Interpolate to center of each sub-layer
+        var_mid = layer_interp(pres[i], pres[i+1], (pres[i]+pres[i+1])/2,
+            var[i], var[i+1])
+
+        #Check for nan
+        if numpy.isnan(var_mid):
+            continue
+
+        #Integrate this sub-layer
+        intvar += var_mid*numpy.log(pres[i+1]/pres[i])
+
+    #Return the integral
+    return intvar
+
 #This function calculate the pressure-weighted layer average of a variable
 #It naively skips layers with nans in them
 #Inputs:
