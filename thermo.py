@@ -29,7 +29,7 @@
 # ~Christopher Phillips
 
 #Import required modules
-import atmos.math as am
+import atmos.atmos_math as am
 import numpy
 
 ############################################################################
