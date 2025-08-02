@@ -15,15 +15,15 @@ g = 9.81 # Gravitaitonal acceleration [m/s2]
 
 ### Function to compute the Monin-Obuukhov length
 ### Inputs:
-###  temp, float array, either temporal or spatial distribution of any temperature (but preferably virtual potential)
-###  w, float array, same shape as temp, either temporal or spatial distribution of vertical wind
+###  temp, float, temperature of surface layer
+###  tflux, float, surface temperature flux
 ###  ustar, float, the friction velocity
 ###
 ### Outputs:
 ###  L, float, the Obukhov length
-def compute_L(temp, w, ustar):
+def compute_L(temp, tflux, ustar):
 
-    L = -(ustar**3)/(k*g*compute_flux(temp, w)/np.nanmean(temp))
+    L = -(ustar**3)/(k*g*tflux/np.nanmean(temp))
 
     return L
 
@@ -122,17 +122,24 @@ def compute_dTdz(z, L, tstar, ustar):
 ###  temp2, float, the temperature at z2 [K]
 def compute_temp(z1, temp1, L, tstar, ustar, z2, step_size=0.1, tolerance=0.05):
 
+    # Check if going up or down
+    if (z2 > z1):
+      step_size = abs(step_size)
+    else:
+      step_size = -1.0*abs(step_size)
+
     # Initialization
     z = z1
     temp2 = temp1
 
     # Integration
-    while (abs(z2-z) < tolerance):
+    while (abs(z2-z) > tolerance):
 
         k1 = compute_dTdz(z, L, tstar, ustar)
         k2 = compute_dTdz(z+step_size*0.5, L, tstar, ustar) # note in this instance, k2==k3 in traditional RK4 notation
         k4 = compute_dTdz(z+step_size, L, tstar, ustar)
 
         temp2 = temp2+(step_size/6.0)*(k1+4.0*k2+k4)
+        z = z+step_size
 
     return temp2
