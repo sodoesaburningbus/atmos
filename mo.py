@@ -87,7 +87,7 @@ def compute_tstar(temp, w, ustar):
 
 ### Function to compute temperature gradient at a height in the surface layer
 ### Inputs:
-###  z, float, the height at which to compute the gradient
+###  z, float, the height at which to compute the gradient [m]
 ###  L, float, the Obhukov length
 ###  tstar, float, temperature scale. Whether dry bulb, virtual, etc. determines which temperature gradient is computed
 ###  ustar, float, friction velocity
@@ -104,5 +104,35 @@ def compute_dTdz(z, L, tstar, ustar):
 
     return dTdz
 
-### Function to compute the temperature at a new level using another level
+### Function to compute the temperature at a new level using another level.
+### Functions for any dry bulb, virtual, etc, provided that Tstar is of the same type.
+### Uses 4th order Runge-Kutta and numerical integrates the temperature gradient
+### beginning at the initial height and moving towards the final height.
+### Inputs:
+###  z1, float, the initial height [m]
+###  temp1, float, the temperature at z1 [K]
+###  L, float, the Obhukov length
+###  tstar, float, temperature scale. Whether dry bulb, virtual, etc. determines which temperature gradient is computed
+###  ustar, float, friction velocity
+###  z2, float, the final height [m]
+###  step_size, optional, defaults to 0.1 m, the integration step [m].
+###  tolerance, optional, defaults to 0.05 m, allowable deviation from z2 when stopping integration 
+###
+### Outputs:
+###  temp2, float, the temperature at z2 [K]
+def compute_temp(z1, temp1, L, tstar, ustar, z2, step_size=0.1, tolerance=0.05):
 
+    # Initialization
+    z = z1
+    temp2 = temp1
+
+    # Integration
+    while (abs(z2-z) < tolerance):
+
+        k1 = compute_dTdz(z, L, tstar, ustar)
+        k2 = compute_dTdz(z+step_size*0.5, L, tstar, ustar) # note in this instance, k2==k3 in traditional RK4 notation
+        k4 = compute_dTdz(z+step_size, L, tstar, ustar)
+
+        temp2 = temp2+(step_size/6.0)*(k1+4.0*k2+k4)
+
+    return temp2
