@@ -66,22 +66,20 @@ def compute_ustar(u,v,w):
     vw = compute_flux(v,w)
 
     # Compute friction velocity
-    ustar = (uw**2+vw**2)**0.25
+    ustar = ((uw**2)+(vw**2))**0.25
 
     return ustar
 
 ### Function to compute the temperature scale (Tstar)
 ### Inputs:
-###  temp, float array, any temperature (T, Tv, Theta, etc.)
-###  w, float array, either temporal or spatial distribution of vertical wind
+###  tflux, float array, temperature flux in surface layer
 ###  ustar, float, friction velocity
 ###
 ### Outputs:
 ###  tstar, float, temperature scale
-def compute_tstar(temp, w, ustar):
+def compute_tstar(tflux, ustar):
 
-    uT = compute_flux(temp,w)
-    tstar = -uT/ustar
+    tstar = -tflux/ustar
 
     return tstar
 
@@ -99,8 +97,8 @@ def compute_dTdz(z, L, tstar, ustar):
     if (L <= 0): # The buoyant case
         dTdz = tstar/(k*z)*0.74*((1.0-9.0*z/L)**(-0.5))
 
-    else: # The dynamically unstable case
-        dTdz = tstar/(k*z)*0.74+4.7*z/L
+    else: # The stable surface layer
+        dTdz = tstar/(k*z)*(0.74+4.7*z/L)
 
     return dTdz
 
@@ -116,11 +114,11 @@ def compute_dTdz(z, L, tstar, ustar):
 ###  ustar, float, friction velocity
 ###  z2, float, the final height [m]
 ###  step_size, optional, defaults to 0.1 m, the integration step [m].
-###  tolerance, optional, defaults to 0.05 m, allowable deviation from z2 when stopping integration 
+###  tolerance, optional, defaults to 0.099 m, allowable deviation from z2 when stopping integration 
 ###
 ### Outputs:
 ###  temp2, float, the temperature at z2 [K]
-def compute_temp(z1, temp1, L, tstar, ustar, z2, step_size=0.1, tolerance=0.05):
+def compute_temp(z1, temp1, L, tstar, ustar, z2, step_size=0.1, tolerance=0.099):
 
     # Check if going up or down
     if (z2 > z1):
@@ -139,7 +137,7 @@ def compute_temp(z1, temp1, L, tstar, ustar, z2, step_size=0.1, tolerance=0.05):
         k2 = compute_dTdz(z+step_size*0.5, L, tstar, ustar) # note in this instance, k2==k3 in traditional RK4 notation
         k4 = compute_dTdz(z+step_size, L, tstar, ustar)
 
-        temp2 = temp2+(step_size/6.0)*(k1+4.0*k2+k4)
+        temp2 = temp2+((step_size/6.0)*(k1+(4.0*k2)+k4))
         z = z+step_size
-
+        
     return temp2
